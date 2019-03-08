@@ -8,15 +8,20 @@
  *       onUpdateFilter=(action 'update')
  *   }}
  */
-import Ember from 'ember';
-import layout from '../../templates/components/filter-values/dimension-select';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
-const { computed, get } = Ember;
+import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { readOnly } from '@ember/object/computed';
+import { debounce } from '@ember/runloop';
+import { A } from '@ember/array';
+import { resolve, Promise } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { get, computed } from '@ember/object';
+import layout from '../../templates/components/filter-values/dimension-select';
 
 const SEARCH_DEBOUNCE_TIME = 200;
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   tagName: '',
@@ -25,17 +30,17 @@ export default Ember.Component.extend({
    * @private
    * @property {Ember.Service} _dimensionService
    */
-  _dimensionService: Ember.inject.service('bard-dimensions'),
+  _dimensionService: service('bard-dimensions'),
 
   /**
    * @property {String} dimensionName - name of dimension to be filtered
    */
-  dimensionName: computed.readOnly('filter.subject.name'),
+  dimensionName: readOnly('filter.subject.name'),
 
   /**
    * @property {String} primaryKey - primary key for this dimension
    */
-  primaryKey: computed.readOnly('filter.subject.primaryKeyFieldName'),
+  primaryKey: readOnly('filter.subject.primaryKeyFieldName'),
 
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
@@ -63,7 +68,7 @@ export default Ember.Component.extend({
         values: dimensionIds.join(',')
       });
     } else {
-      return Ember.RSVP.resolve(Ember.A());
+      return resolve(A());
     }
   }),
 
@@ -102,7 +107,7 @@ export default Ember.Component.extend({
     setValues(values) {
       let primaryKey = get(this, 'primaryKey');
       this.onUpdateFilter({
-        rawValues: Ember.A(values).mapBy(primaryKey)
+        rawValues: A(values).mapBy(primaryKey)
       });
     },
 
@@ -116,8 +121,8 @@ export default Ember.Component.extend({
       let term = query.trim();
 
       if (term) {
-        return new Ember.RSVP.Promise((resolve, reject) => {
-          return Ember.run.debounce(this, this._performSearch, term, resolve, reject, SEARCH_DEBOUNCE_TIME);
+        return new Promise((resolve, reject) => {
+          return debounce(this, this._performSearch, term, resolve, reject, SEARCH_DEBOUNCE_TIME);
         });
       }
     }
