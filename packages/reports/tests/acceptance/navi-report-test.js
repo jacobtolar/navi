@@ -1,19 +1,8 @@
 import Component from '@ember/component';
 import { get } from '@ember/object';
 import Ember from 'ember';
-import { module, test } from 'qunit';
-import {
-  click,
-  fillIn,
-  visit,
-  currentURL,
-  find,
-  findAll,
-  blur,
-  triggerEvent,
-  waitFor,
-  settled
-} from '@ember/test-helpers';
+import { module, test, skip } from 'qunit';
+import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import { teardownModal } from '../helpers/teardown-modal';
 import { findContains } from '../helpers/contains-helpers';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
@@ -54,7 +43,7 @@ module('Acceptance | Navi Report', function(hooks) {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  test('validation errors abcdef', async function(assert) {
+  test('validation errors', async function(assert) {
     assert.expect(3);
 
     // Make an invalid change and run report
@@ -487,7 +476,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Clone)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Clone)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Clone action is enabled for a valid report'
     );
 
@@ -500,7 +491,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Clone)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Clone)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Clone action is enabled from a valid save report'
     );
   });
@@ -511,7 +504,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Export)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Export)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Export action is enabled for a valid report'
     );
 
@@ -523,7 +518,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Export)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Export action is disabled when report is not valid'
     );
 
@@ -535,7 +532,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Export)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Export)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Export action is enabled for a valid report'
     );
 
@@ -548,7 +547,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)').is('.navi-report__action-link--force-disabled'),
+      findContains('.navi-report__action-link:contains(Export)').classList.contains(
+        'navi-report__action-link--force-disabled'
+      ),
       'Export action is disabled when report is not valid'
     );
   });
@@ -784,7 +785,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.notOk(
-      $('.navi-report__action:contains(Share)').is('.navi-report__action--is-disabled'),
+      findContains('.navi-report__action:contains(Share)').classList.contains('navi-report__action--is-disabled'),
       'Share action is disabled for invalid report'
     );
 
@@ -792,7 +793,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     assert.notOk(
-      $('.navi-report__action:contains(Share)').is('.navi-report__action--is-disabled'),
+      findContains('.navi-report__action:contains(Share)').classList.contains('navi-report__action--is-disabled'),
       'Share action is disabled for new report'
     );
   });
@@ -871,7 +872,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     assert.notOk(
-      $('.navi-report__action:contains(Delete)').is('.navi-report__action--is-disabled'),
+      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
       'Delete action is enabled for a valid report'
     );
 
@@ -879,7 +880,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.notOk(
-      $('.navi-report__action:contains(Delete)').is('.navi-report__action--is-disabled'),
+      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
       'Delete action is enabled for a valid report'
     );
 
@@ -895,7 +896,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Delete)').is('.navi-report__action--is-disabled'),
+      findContains('.navi-report__action:contains(Delete)').classList.contains('navi-report__action--is-disabled'),
       'Delete action is enabled when report is not valid'
     );
 
@@ -1736,7 +1737,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
-  test('adding metrics to reordered table keeps order abcdef', async function(assert) {
+  test('adding metrics to reordered table keeps order', async function(assert) {
     assert.expect(2);
     await visit('/reports/2');
 
@@ -1780,7 +1781,7 @@ module('Acceptance | Navi Report', function(hooks) {
       );
   });
 
-  test('Cancel Report abcdef', async function(assert) {
+  skip('Cancel Report', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -1788,7 +1789,6 @@ module('Acceptance | Navi Report', function(hooks) {
       return { rows: [] };
     });
 
-    // visitWithoutWait('/reports/1');
     //Load the report without waiting for it to finish loading
     visit('/reports/1');
 
@@ -1801,11 +1801,6 @@ module('Acceptance | Navi Report', function(hooks) {
         ['Cancel'],
         'When report is loading, the only footer button is `Cancel`'
       );
-
-      //Cancel the report
-      // await settled();
-      // await waitUntil(() => !getSettledState().hasPendingTransitions);
-      // debugger;
 
       await click(buttons[0]);
     });
