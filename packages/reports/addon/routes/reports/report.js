@@ -9,6 +9,7 @@ import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import RSVP from 'rsvp';
+import isEqual from 'lodash/isEqual';
 
 export default Route.extend({
   /**
@@ -208,6 +209,24 @@ export default Route.extend({
       controller.set('reportState', state);
     },
 
+    /*
+     * @action setHasRequestRun
+     * @param {Boolean} value
+     */
+    setHasRequestRun(value) {
+      const controller = this.controllerFor(this.routeName);
+      controller.set('hasRequestRun', value);
+    },
+
+    /*
+     * @action setPreviousRequest
+     * @param {Object} request
+     */
+    setPreviousRequest(request) {
+      const controller = this.controllerFor(this.routeName);
+      controller.set('previousRequest', request);
+    },
+
     /**
      * @action onUpdateVisualizationConfig
      *
@@ -236,6 +255,17 @@ export default Route.extend({
        */
       if (actionType) {
         get(this, 'updateReportActionDispatcher').dispatch(actionType, this, ...args);
+      }
+
+      /*
+       * Some action types don't update the request and no rerun in necessary
+       */
+      const controller = this.controllerFor(this.routeName),
+        previousRequest = controller.get('previousRequest'),
+        currentRequest = this.currentModel.get('request').serialize();
+
+      if (!isEqual(previousRequest, currentRequest)) {
+        this.send('setHasRequestRun', false);
       }
     },
 

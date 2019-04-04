@@ -20,6 +20,16 @@ export default Controller.extend({
   showSaveAs: false,
 
   /**
+   * @property {Boolean} hasRequestRun - whether the save as dialog is showing
+   */
+  hasRequestRun: false,
+
+  /**
+   * @property {Object} previousRequest - report's previous request
+   */
+  previousRequest: null,
+
+  /**
    * @property {String} reportState - state of the the report
    */
   reportState: computed({

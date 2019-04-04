@@ -55,7 +55,7 @@ export default Route.extend({
     return get(this, 'facts')
       .fetch(serializedRequest, requestOptions)
       .then(response => {
-        set(this, 'previousRequest', serializedRequest);
+        this.send('setPreviousRequest', serializedRequest);
         this._setValidVisualizationType(request, report);
         this._setValidVisualizationConfig(request, report, response.response);
 
@@ -115,12 +115,10 @@ export default Route.extend({
      * @returns {Transition|Void} - the model refresh transition
      */
     runReport() {
-      let report = get(this, 'parentModel'),
-        request = get(report, 'request').serialize(),
-        previousRequest = get(this, 'previousRequest');
+      const hasRequestRun = this.controllerFor('reports.report').get('hasRequestRun');
 
       // Run the report only if there are request changes
-      if (!isEqual(request, previousRequest)) {
+      if (!hasRequestRun) {
         return this.refresh();
       } else {
         this.send('setReportState', 'completed');
@@ -167,7 +165,9 @@ export default Route.extend({
      * @action didTransition
      */
     didTransition() {
+      this.send('setHasRequestRun', true);
       this.send('setReportState', 'completed');
+
       return true;
     },
 

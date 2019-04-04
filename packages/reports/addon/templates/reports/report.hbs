@@ -49,6 +49,7 @@
 
       <button
         class="btn btn-primary navi-report__run-btn"
+        disabled={{hasRequestRun}}
         onclick={{pipe
           (route-action "validate" model)
           (route-action "runReport" model)

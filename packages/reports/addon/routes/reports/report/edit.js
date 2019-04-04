@@ -7,6 +7,7 @@ import Route from '@ember/routing/route';
 export default Route.extend({
   actions: {
     didTransition() {
+      this.send('setHasRequestRun', false);
       this.send('setReportState', 'editing');
       return true; // Bubble the didTransition event
     }
