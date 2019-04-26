@@ -80,6 +80,12 @@ Make use of the many generators for code, try `ember help generate` for more det
 - `ember build` (development)
 - `ember build --environment production` (production)
 
+### Building Demo App
+
+From `packages/app`, run:
+
+- `BUILD_NAVI_DEMO=true node node_modules/ember-cli/bin/ember github-pages:commit --message "update gh-pages" --destination ../../`
+
 #### Deploying
 
 Specify what it takes to deploy your app.
